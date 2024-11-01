@@ -63,6 +63,11 @@ namespace Web.Controllers
                 return BadRequest("Invalid event data");
             }
 
+            if (createEventRequest.Date < DateTime.Now) 
+            {
+                return BadRequest("Invalid date");
+            }
+
             var eventOrganizer = _context.EventsOrganizers.Find(organizerId);
             if (eventOrganizer == null)
             {
@@ -126,6 +131,21 @@ namespace Web.Controllers
             else
             {
                 return Ok(result);
+            }
+        }
+
+
+        [Authorize(Policy = "EventOrganizer")]
+        [HttpGet("/update-event")]
+        public IActionResult Update([FromQuery] EventUpdateRequest eventToUpdate)
+        { 
+            try
+            {
+                _eventService.UpdateEvent(eventToUpdate);
+                return NoContent();
+            } catch
+            {
+                return BadRequest("error");
             }
         }
     }

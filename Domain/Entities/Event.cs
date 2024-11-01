@@ -45,6 +45,17 @@ namespace Domain.Entities
             }
         }
 
+        public Event(int id, string? name, string? address, string? city, DateTime date, string? category, float price)
+        {
+            Id = id;
+            Name = name;
+            Address = address;
+            City = city;
+            Date = date;
+            Category = category;
+            Price = price;
+        }
+
         public Event() // constructor vacio que necesita ef
         {
             Tickets = new List<Ticket>();
