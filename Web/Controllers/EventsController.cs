@@ -30,8 +30,41 @@ namespace Web.Controllers
             _eventOrganizerService = eventOrganizerService;
         }
 
+
+
+        [Authorize(Policy = "EventOrganizer")]
+        [HttpPost("/create-event")]
+        public IActionResult CreateEvent([FromQuery]EventsRequest createEventRequest)
+        {
+            if (createEventRequest == null)
+            {
+                return BadRequest("Invalid event data");
+            }
+
+            if (createEventRequest.Date < DateTime.Now) 
+            {
+                return BadRequest("Invalid date");
+            }
+
+            var eventOrganizer = _context.EventsOrganizers.Find(createEventRequest.EventOrganizerId);
+            if (eventOrganizer == null)
+            {
+                return NotFound("Organizer not found");
+            }
+
+            var createEvent = _eventService.CreateEvent(createEventRequest);
+
+            if (createEvent != null)
+            {
+                return CreatedAtAction(nameof(GetEventById), new { id = createEvent.Id }, createEvent);
+            }
+            return BadRequest("Not equals ids");
+        }
+
+
+
         [Authorize(Policy = "SuperAdmin")]
-        [HttpGet("organizer/{organizerId}/getEventOrganizer")]
+        [HttpGet("organizer/{organizerId}")]
         public IActionResult GetEventOrganizer(int organizerId)
         {
             var organizer = _eventOrganizerService.GetEventOrganizer(organizerId);
@@ -54,41 +87,13 @@ namespace Web.Controllers
             return Ok(events);
         }
 
-        [Authorize(Policy = "EventOrganizer")]
-        [HttpPost("organizer/{organizerId}/create-events")]
-        public IActionResult CreateEvent(int organizerId, [FromQuery]EventsRequest createEventRequest)
-        {
-            if (createEventRequest == null)
-            {
-                return BadRequest("Invalid event data");
-            }
 
-            if (createEventRequest.Date < DateTime.Now) 
-            {
-                return BadRequest("Invalid date");
-            }
-
-            var eventOrganizer = _context.EventsOrganizers.Find(organizerId);
-            if (eventOrganizer == null)
-            {
-                return NotFound("Organizer not found");
-            }
-
-            var createEvent = _eventService.CreateEvent(createEventRequest);
-
-            if (createEvent != null)
-            {
-                return CreatedAtAction(nameof(GetEventById), new { id = createEvent.Id }, createEvent);
-                
-            }
-            return BadRequest("Not equals ids");
-        }
 
         [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("/get-event-by-id/{eventId}")]
-        public IActionResult GetEventById(int eventId)
+        [HttpGet("{Id}")]
+        public IActionResult GetEventById(int Id)
         {
-            var eventToSearch = _eventService.GetEventById(eventId);
+            var eventToSearch = _eventService.GetEventById(Id);
             if (eventToSearch == null)
             {
                 return NotFound("Event not found");
@@ -96,8 +101,10 @@ namespace Web.Controllers
             return Ok(eventToSearch);
         }
 
+
+
         [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("/event-organizer/{eventOrganizerId}/check-available-tickets/{eventId}")]
+        [HttpGet("organizers/{eventOrganizerId}/events/{eventId}/tickets/available")]
         public IActionResult CheckAvailableTickets(int eventOrganizerId, int eventId)
         {
             int result = _eventOrganizerService.CheckAvailableTickets(eventOrganizerId, eventId);
@@ -115,8 +122,10 @@ namespace Web.Controllers
             }
         }
 
+
+
         [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("/event-organizer/{eventOrganizerId}/check-sold-tickets/{eventId}")]
+        [HttpGet("organizers/{eventOrganizerId}/events/{eventId}/tickets/sold")]
         public IActionResult CheckSoldTickets(int eventOrganizerId, int eventId)
         {
             int result = _eventOrganizerService.CheckSoldTickets(eventOrganizerId, eventId);
@@ -135,8 +144,9 @@ namespace Web.Controllers
         }
 
 
+
         [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("/update-event")]
+        [HttpPut("/update-event")]
         public IActionResult Update([FromQuery] EventUpdateRequest eventToUpdate)
         { 
             try
@@ -146,6 +156,21 @@ namespace Web.Controllers
             } catch
             {
                 return BadRequest("error");
+            }
+        }
+
+
+        [Authorize(Policy = "EventOrganizer")]
+        [HttpDelete("{eventId}")]
+        public IActionResult Delete(int eventId)
+        {
+            try
+            {
+                _eventService.DeleteEvent(eventId);
+                return NoContent();
+            } catch
+            {
+                return BadRequest("Error al borrar");
             }
         }
     }

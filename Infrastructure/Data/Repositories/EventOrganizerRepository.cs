@@ -55,5 +55,43 @@ namespace Infrastructure.Data.Repositories
 
             return myEvent.Tickets.Count(t => t.State == TicketState.Sold);
         }
+
+        public EventOrganizer Add(EventOrganizer eventOrganizer)
+        {
+            var organizerExist = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == eventOrganizer.Id);
+
+            if (eventOrganizer != null && organizerExist == null)
+            {
+                _context.Users.Add(eventOrganizer);
+                _context.SaveChanges();
+                return eventOrganizer;
+            }
+
+            return null;
+        }
+
+        public void Update(EventOrganizer eventOrganizer)
+        {
+            var existingOrganizer = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == eventOrganizer.Id);
+            if (existingOrganizer != null)
+            {
+                existingOrganizer.Name = eventOrganizer.Name;
+                existingOrganizer.Email = eventOrganizer.Email;
+                existingOrganizer.Password = eventOrganizer.Password;
+                existingOrganizer.Phone = eventOrganizer.Phone;
+                _context.Update(existingOrganizer);
+                _context.SaveChanges();
+            }
+        }
+
+        public void Delete(int eventOrganizerId)
+        {
+            var organizer = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == eventOrganizerId);
+            if(organizer != null)
+            {
+                _context.EventsOrganizers.Remove(organizer);
+                _context.SaveChanges();
+            }
+        }
     }
 }

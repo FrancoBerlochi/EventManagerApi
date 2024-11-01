@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationX : Migration
+    public partial class myMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -91,7 +91,7 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "Email", "Name", "Password", "Phone", "Role" },
                 values: new object[,]
                 {
-                    { 1, "francocaivano2002@gmail.com", "francoc3", "Contraseña", "3415526384", "SuperAdmin" },
+                    { 1, "string", "francoc3", "string", "3415526384", "SuperAdmin" },
                     { 2, "francoberlochi@gmail.com", "francob3", "Contraseña1", "3415522312", "EventOrganizer" }
                 });
 

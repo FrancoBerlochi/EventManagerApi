@@ -146,7 +146,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasBaseType("Domain.Entities.User");
 
-                    b.HasDiscriminator().HasValue("Event Organizer");
+                    b.HasDiscriminator().HasValue("EventOrganizer");
 
                     b.HasData(
                         new
@@ -164,15 +164,15 @@ namespace Infrastructure.Migrations
                 {
                     b.HasBaseType("Domain.Entities.User");
 
-                    b.HasDiscriminator().HasValue("Super Admin");
+                    b.HasDiscriminator().HasValue("SuperAdmin");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Email = "francocaivano2002@gmail.com",
+                            Email = "string",
                             Name = "francoc3",
-                            Password = "Contraseña",
+                            Password = "string",
                             Phone = "3415526384",
                             Role = "SuperAdmin"
                         });
