@@ -42,13 +42,14 @@ namespace Application.Services
             }
             if(organizersDto.Count <= 0)
             {
-                throw new Exception("No organizers found");
+                throw new NotFoundException("EventOrganizer", "All");
             }
             return organizersDto;
         }
 
         public int CheckAvailableTickets(int eventOrganizerId, int eventId)
         {
+
             return _eventOrganizerRepository.CheckAvailableTickets(eventOrganizerId, eventId);
         }
 
@@ -71,6 +72,11 @@ namespace Application.Services
 
         public void Delete(int eventOrganizerId)
         {
+            var eventOrganizer = _eventOrganizerRepository.GetEventOrganizer(eventOrganizerId);
+            if(eventOrganizer == null)
+            {
+                throw new NotFoundException("EventOrganizer", eventOrganizerId);
+            }
             _eventOrganizerRepository.Delete(eventOrganizerId);
         }
     }

@@ -7,6 +7,7 @@ using Domain.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Domain.Enums;
+using Domain.Exceptions;
 
 namespace Infrastructure.Data.Repositories
 {
@@ -34,6 +35,11 @@ namespace Infrastructure.Data.Repositories
         {
             var client = _context.Users.OfType<Client>().FirstOrDefault(c => c.Id == clientId);
             var ticket = _context.Tickets.Where(t => t.EventId == eventId).FirstOrDefault(t => t.State == TicketState.Available);
+            
+            //if(ticket == null)
+            //{
+            //    throw new NotFoundException("No tickets available for this event");
+            //}
 
             if (client != null && ticket != null)
             {

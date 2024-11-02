@@ -32,7 +32,8 @@ namespace Web.Controllers
             var client = _clientService.CreateClient(clientCreateRequest);
             if(client != null)
             {
-                return CreatedAtAction(nameof(GetClientById), new {id = client.Id}, client); 
+                //return CreatedAtAction(nameof(GetClientById), new {id = client.Id}, client); 
+                return Ok("Client created");
             }
             return BadRequest();
         }

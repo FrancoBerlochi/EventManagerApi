@@ -29,7 +29,7 @@ namespace Web.Controllers
 
         [Authorize(Policy = "SuperAdmin")]
         [HttpPost()]
-        public IActionResult Create([FromQuery] EventOrganizerCreateRequest eventOrganizerCreateRequest)
+        public IActionResult Create([FromBody] EventOrganizerCreateRequest eventOrganizerCreateRequest)
         {
             if (eventOrganizerCreateRequest == null)
             {
@@ -41,7 +41,7 @@ namespace Web.Controllers
                 return CreatedAtAction(nameof(GetEventOrganizer), new {id = organizerCreated.Id}, organizerCreated);
             }
 
-            return BadRequest("error");
+            return BadRequest("Error creating the organizer");
         }
 
 
@@ -75,8 +75,6 @@ namespace Web.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-            return BadRequest();
         }
 
 
@@ -99,13 +97,14 @@ namespace Web.Controllers
         [HttpDelete()]
         public IActionResult Delete(int id)
         {
-            var organizerToDelete = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == id);
-            if(organizerToDelete != null)
+            try
             {
                 _eventOrganizerService.Delete(id);
                 return Ok("Deleted");
+            } catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
-            return BadRequest("error");
         }
     }
 }
