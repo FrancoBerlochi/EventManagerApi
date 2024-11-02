@@ -8,10 +8,9 @@ namespace Domain.Entities
 {
     public class Client : User 
     {
-        public int Age {  get; set; }
         public ICollection<Ticket> MyTickets { get; set; } = new List<Ticket>();
 
-        public Client(string name, string email, string password, string phone, string role) : base(name, email, password, phone, role)
+        public Client(string name, string email, string password, string phone, string role = "Client") : base(name, email, password, phone, role)
         {
             
         }

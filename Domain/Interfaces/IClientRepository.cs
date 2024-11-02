@@ -9,11 +9,12 @@ namespace Domain.Interfaces
 {
     public interface IClientRepository
     {
-        //bool CreateClient(Client client);
+        Client CreateClient(Client client);
         bool BuyTicket(int eventId, int clientId);
         List<Ticket> GetAllMyTickets(int clientId);
         Client GetClientById(int id);
-        void UpdateClient(Client client);
+        void UpdateClient(int id, Client client);
+        void DeleteClient(int id);
         List<Event> GetAllEvents();
     }
 }

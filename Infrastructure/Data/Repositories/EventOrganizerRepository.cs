@@ -19,7 +19,8 @@ namespace Infrastructure.Data.Repositories
         }
         public EventOrganizer GetEventOrganizer(int eventOrganizerId) 
         {
-            return _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == eventOrganizerId);
+            return _context.EventsOrganizers.Find(eventOrganizerId);
+            //return _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == eventOrganizerId);
         }
 
         public int CheckAvailableTickets(int eventOrganizerId, int eventId)
@@ -37,6 +38,11 @@ namespace Infrastructure.Data.Repositories
             }
 
             return myEvent.Tickets.Count(t => t.State == TicketState.Available);
+        }
+
+        public List<EventOrganizer> GetAll()
+        {
+            return _context.Users.OfType<EventOrganizer>().ToList();
         }
 
         public int CheckSoldTickets(int eventOrganizerId, int eventId)
@@ -58,9 +64,8 @@ namespace Infrastructure.Data.Repositories
 
         public EventOrganizer Add(EventOrganizer eventOrganizer)
         {
-            var organizerExist = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == eventOrganizer.Id);
 
-            if (eventOrganizer != null && organizerExist == null)
+            if (eventOrganizer != null)
             {
                 _context.Users.Add(eventOrganizer);
                 _context.SaveChanges();
@@ -70,9 +75,9 @@ namespace Infrastructure.Data.Repositories
             return null;
         }
 
-        public void Update(EventOrganizer eventOrganizer)
+        public void Update(int id, EventOrganizer eventOrganizer)
         {
-            var existingOrganizer = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == eventOrganizer.Id);
+            var existingOrganizer = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == id);
             if (existingOrganizer != null)
             {
                 existingOrganizer.Name = eventOrganizer.Name;

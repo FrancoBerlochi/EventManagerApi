@@ -12,8 +12,9 @@ namespace Application.Interfaces
     public interface IEventOrganizerService
     {
         EventOrganizerDto Add(EventOrganizerCreateRequest eventOrganizerCreateRequest);
-        EventOrganizer GetEventOrganizer(int eventOrganizerId);
-        void Update(EventOrganizerUpdateRequest eventOrganizerUpdateRequest);
+        EventOrganizerDto GetEventOrganizer(int eventOrganizerId);
+        List<EventOrganizerDto> GetAll();
+        void Update(int id, EventOrganizerUpdateRequest eventOrganizerUpdateRequest);
         void Delete(int eventOrganizerId);
         int CheckAvailableTickets(int eventOrganizerId, int eventId);
         int CheckSoldTickets(int eventOrganizerId, int eventId);

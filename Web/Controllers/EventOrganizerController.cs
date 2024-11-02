@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Services;
 using Application.Models.Request;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Web.Controllers
 {
@@ -16,11 +17,15 @@ namespace Web.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly IEventOrganizerService _eventOrganizerService;
+        
+        
         public EventOrganizerController(ApplicationContext context, IEventOrganizerService eventOrganizerService)
-        {
+        {   
             _context = context;
             _eventOrganizerService = eventOrganizerService;
         }
+
+
 
         [Authorize(Policy = "SuperAdmin")]
         [HttpPost()]
@@ -33,11 +38,62 @@ namespace Web.Controllers
             var organizerCreated = _eventOrganizerService.Add(eventOrganizerCreateRequest);
             if(organizerCreated != null)
             {
-                return Ok(organizerCreated);
+                return CreatedAtAction(nameof(GetEventOrganizer), new {id = organizerCreated.Id}, organizerCreated);
             }
 
             return BadRequest("error");
         }
+
+
+
+
+        [Authorize(Policy = "SuperAdmin")]
+        [HttpGet("organizer/{organizerId}")]
+        public IActionResult GetEventOrganizer(int organizerId)
+        {
+            try
+            {
+                var organizer = _eventOrganizerService.GetEventOrganizer(organizerId);
+                return Ok(organizer);
+            }
+            catch (NotFoundException ex) 
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+
+        [Authorize(Policy = "SuperAdmin")]
+        [HttpGet()]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                var organizers = _eventOrganizerService.GetAll();
+                return Ok(organizers);
+            } catch (NotFoundException ex) 
+            {
+                return NotFound(ex.Message);
+            }
+
+            return BadRequest();
+        }
+
+
+
+        [Authorize(Policy = "SuperAdmin")]
+        [HttpPut()]
+        public IActionResult Update(int id, [FromQuery] EventOrganizerUpdateRequest eventOrganizerUpdateRequest)
+        {
+            var organizerToUpdate = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == id);
+            if (organizerToUpdate != null)
+            {
+                _eventOrganizerService.Update(id, eventOrganizerUpdateRequest);
+                return Ok("Updated");
+            }
+            return BadRequest("error");
+        }
+
 
         [Authorize(Policy = "SuperAdmin")]
         [HttpDelete()]

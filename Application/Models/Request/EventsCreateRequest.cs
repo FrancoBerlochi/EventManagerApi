@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Models.Request
 {
-    public class EventsRequest()
+    public class EventsCreateRequest()
     {
         [Required]
         public string Name { get; set; }

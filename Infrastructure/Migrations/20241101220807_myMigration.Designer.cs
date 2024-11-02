@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241101174924_myMigration")]
+    [Migration("20241101220807_myMigration")]
     partial class myMigration
     {
         /// <inheritdoc />
@@ -127,9 +127,6 @@ namespace Infrastructure.Migrations
                 {
                     b.HasBaseType("Domain.Entities.User");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("INTEGER");
-
                     b.HasDiscriminator().HasValue("Client");
 
                     b.HasData(
@@ -140,8 +137,7 @@ namespace Infrastructure.Migrations
                             Name = "ulisesdb1",
                             Password = "Contraseña3",
                             Phone = "3415522313",
-                            Role = "Client",
-                            Age = 20
+                            Role = "Client"
                         });
                 });
 

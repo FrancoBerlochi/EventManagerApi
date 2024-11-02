@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace Application.Models.Request
 {
-    public class ClientRequest
+    public class ClientCreateRequest
     {
+
+        public string Name { get; set; } = string.Empty;
         [Required]
         public string Email { get; set; } = string.Empty;
-
         [Required]
         public string Password { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
     }
 }

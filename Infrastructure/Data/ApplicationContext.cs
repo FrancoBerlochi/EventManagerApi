@@ -9,8 +9,9 @@ namespace Infrastructure
         public DbSet<Event> Events { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Client> Clients { get; set; }
         public DbSet<EventOrganizer> EventsOrganizers { get; set; }
-
+        public DbSet<SuperAdmin> SuperAdmins { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         { }
 
@@ -85,7 +86,6 @@ namespace Infrastructure
                     Password = "Contraseña3",
                     Phone = "3415522313",
                     Role = "Client",
-                    Age = 20,
                     MyTickets = new List<Ticket>()
                 }
             );

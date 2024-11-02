@@ -19,7 +19,7 @@ namespace Application.Services
             _eventRepository = eventRepository;
         }
 
-        public EventsDto CreateEvent(EventsRequest eventRequest) 
+        public EventsDto CreateEvent(EventsCreateRequest eventRequest) 
         { 
             var newEvent = new Event(eventRequest.Name, eventRequest.Address, eventRequest.City, eventRequest.Date, eventRequest.NumberOfTickets, eventRequest.Category, eventRequest.Price, eventRequest.EventOrganizerId);
             var createdEvent = _eventRepository.Add(newEvent, eventRequest.EventOrganizerId);

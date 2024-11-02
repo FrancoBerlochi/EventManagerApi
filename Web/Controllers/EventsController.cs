@@ -34,7 +34,7 @@ namespace Web.Controllers
 
         [Authorize(Policy = "EventOrganizer")]
         [HttpPost("/create-event")]
-        public IActionResult CreateEvent([FromQuery]EventsRequest createEventRequest)
+        public IActionResult CreateEvent([FromQuery]EventsCreateRequest createEventRequest)
         {
             if (createEventRequest == null)
             {
@@ -63,17 +63,6 @@ namespace Web.Controllers
 
 
 
-        [Authorize(Policy = "SuperAdmin")]
-        [HttpGet("organizer/{organizerId}")]
-        public IActionResult GetEventOrganizer(int organizerId)
-        {
-            var organizer = _eventOrganizerService.GetEventOrganizer(organizerId);
-            if (organizer == null)
-            {
-                return NotFound("Organizer not found");
-            }
-            return Ok(organizer);
-        }
 
         [HttpGet("organizer/{organizerId}/events")]
         public IActionResult GetEventsByOrganizer(int organizerId)

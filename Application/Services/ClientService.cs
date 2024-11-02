@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Models.DTO;
+using Application.Models.Request;
 
 namespace Application.Services
 {
@@ -21,14 +23,11 @@ namespace Application.Services
             _eventRepository = eventRepository;
         }
 
-        public void Register() 
+        public ClientDto CreateClient(ClientCreateRequest clientCreateRequest)
         {
-            // Lógica para el registro
-        }
-
-        public string Login() 
-        {
-            return "hoa"; // Lógica para el inicio de sesión
+            var newClient = new Client(clientCreateRequest.Name, clientCreateRequest.Email, clientCreateRequest.Password, clientCreateRequest.Phone);
+            var createdClient = _clientRepository.CreateClient(newClient);
+            return ClientDto.Create(createdClient);
         }
 
         public bool BuyTicket(int clientId, int eventId)
@@ -46,7 +45,7 @@ namespace Application.Services
             }
 
 
-            _clientRepository.UpdateClient(client);
+            _clientRepository.UpdateClient(clientId, client);
             return _clientRepository.BuyTicket(eventId, clientId);
         }
 
@@ -62,6 +61,15 @@ namespace Application.Services
 
         public List<Ticket> GetAllMyTickets(int clientId) { return _clientRepository.GetAllMyTickets(clientId); }
 
-        
+        public void Update(int id, ClientUpdateRequest clientUpdateRequest)
+        {
+            var client = new Client(clientUpdateRequest.Name, clientUpdateRequest.Email, clientUpdateRequest.Password, clientUpdateRequest.Phone);
+            _clientRepository.UpdateClient(id, client);
+        }
+
+        public void Delete(int id)
+        {
+            _clientRepository.DeleteClient(id);
+        }
     }
 }
