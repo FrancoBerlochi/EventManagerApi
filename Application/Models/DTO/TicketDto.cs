@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Domain.Entities;
+using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +11,25 @@ namespace Application.Models.DTO
     public class TicketDto
     {
         public int Id { get; set; }
+        public int EventId { get; set; }
+        public Event Event { get; set; }
+        public int? ClientId { get; set; }
+        public Client? Client { get; set; }
+        public float Amount { get; set; }
+        public string? PaymentMethod { get; set; }
+        public TicketState State { get; set; }
 
+        public static TicketDto create(Ticket ticketToShow) 
+        { 
+            TicketDto dto = new TicketDto();
+            dto.Id = ticketToShow.Id;
+            dto.Event = ticketToShow.Event;
+            dto.ClientId = ticketToShow.ClientId;
+            dto.Client = ticketToShow.Client;
+            dto.Amount = ticketToShow.Amount;
+            dto.PaymentMethod = ticketToShow.PaymentMethod;
+            dto.State = ticketToShow.State;
+            return dto;
+        }
     }
 }

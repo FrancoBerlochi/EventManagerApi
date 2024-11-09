@@ -14,7 +14,7 @@ namespace Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int EventId { get; set; } // id del evento al que está asociado el ticket
+        public int EventId { get; set; } 
         public Event Event { get; set; }
         public int? ClientId { get; set; }
         public Client? Client { get; set; }

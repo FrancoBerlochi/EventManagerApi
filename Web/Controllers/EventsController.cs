@@ -9,6 +9,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Application.Models.Request;
 using Application.Services;
+using System.Security.Claims;
 
 
 namespace Web.Controllers
@@ -34,44 +35,49 @@ namespace Web.Controllers
 
         [Authorize(Policy = "EventOrganizer")]
         [HttpPost("/create-event")]
-        public IActionResult CreateEvent([FromQuery]EventsCreateRequest createEventRequest)
+        public IActionResult CreateEvent([FromQuery] EventsCreateRequest createEventRequest)
         {
             if (createEventRequest == null)
             {
                 return BadRequest("Invalid event data");
             }
 
-            if (createEventRequest.Date < DateTime.Now) 
+            if (createEventRequest.Date < DateTime.Now)
             {
                 return BadRequest("Invalid date");
             }
 
-            var eventOrganizer = _context.EventsOrganizers.Find(createEventRequest.EventOrganizerId);
+            var claimId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+
+            var eventOrganizer = _context.EventsOrganizers.Find(claimId);
             if (eventOrganizer == null)
             {
                 return NotFound("Organizer not found");
             }
 
-            var createEvent = _eventService.CreateEvent(createEventRequest);
+            var createEvent = _eventService.CreateEvent(createEventRequest, claimId);
 
-            if (createEvent != null)
+            if (createEvent == null)
             {
-                return CreatedAtAction(nameof(GetEventById), new { id = createEvent.Id }, createEvent);
+                return BadRequest("The event that you are trying to create already exists");
             }
-            return BadRequest("Not equals ids");
+            return CreatedAtAction(nameof(GetEventById), new { id = claimId }, createEvent);
         }
 
 
 
-
-        [HttpGet("organizer/{organizerId}/events")]
-        public IActionResult GetEventsByOrganizer(int organizerId)
+        [Authorize(Policy = "EventOrganizer")]
+        [HttpGet("organizer/events")]
+        public IActionResult GetEventsByOrganizer()
         {
+            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             var events = _eventService.GetEventsByOrganizerId(organizerId);
 
-            if (events == null || !events.Any())
+            if (events == null)
             {
-                return NotFound("No events for this organizer or this is not an organizer"); 
+                return NotFound("No events for this organizer or you are not an organizer");
             }
             return Ok(events);
         }
@@ -83,7 +89,12 @@ namespace Web.Controllers
         public IActionResult GetEventById(int Id)
         {
             var eventToSearch = _eventService.GetEventById(Id);
-            if (eventToSearch == null)
+            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            if (eventToSearch.EventOrganizerId != organizerId)
+            {
+                return StatusCode(403,"This event does not belong to you");
+            }
+            else if (eventToSearch == null)
             {
                 return NotFound("Event not found");
             }
@@ -93,30 +104,36 @@ namespace Web.Controllers
 
 
         [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("organizers/{eventOrganizerId}/events/{eventId}/tickets/available")]
-        public IActionResult CheckAvailableTickets(int eventOrganizerId, int eventId)
+        [HttpGet("organizers/events/event/tickets/available")]
+        public IActionResult CheckAvailableTickets(int eventId)
         {
+            var eventOrganizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             int result = _eventOrganizerService.CheckAvailableTickets(eventOrganizerId, eventId);
-            if(result == -1)
+
+            if (result == -1)
             {
                 return NotFound("Event not found");
-            } 
+            }
             else if (result == -2)
             {
                 return NotFound("Organizer not found");
             }
-            else
+            else if(result == -3) 
             {
-                return Ok(result);
+                return StatusCode(403, "It is not your event");
             }
+               
+                return Ok(result);
+            
         }
 
-
-
         [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("organizers/{eventOrganizerId}/events/{eventId}/tickets/sold")]
-        public IActionResult CheckSoldTickets(int eventOrganizerId, int eventId)
+        [HttpGet("organizers/events/event/tickets/sold")]
+        public IActionResult CheckSoldTickets(int eventId)
         {
+            var eventOrganizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             int result = _eventOrganizerService.CheckSoldTickets(eventOrganizerId, eventId);
             if (result == -1)
             {
@@ -126,26 +143,28 @@ namespace Web.Controllers
             {
                 return NotFound("Organizer not found");
             }
-            else
+            else if (result == -3)
             {
-                return Ok(result);
+                return StatusCode(403, "It is not your event");
             }
+                return Ok(result);
         }
-
-
 
         [Authorize(Policy = "EventOrganizer")]
         [HttpPut("/update-event")]
-        public IActionResult Update([FromQuery] EventUpdateRequest eventToUpdate)
-        { 
-            try
+        public IActionResult Update(EventUpdateRequest eventToUpdate)
+        {
+            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var updatedEvent = _eventService.UpdateEvent(eventToUpdate, organizerId);
+            if (updatedEvent == null)
             {
-                _eventService.UpdateEvent(eventToUpdate);
-                return NoContent();
-            } catch
-            {
-                return BadRequest("error");
+                return NotFound("Event not found");
             }
+            else if (updatedEvent.EventOrganizerId != organizerId) 
+            {
+                return StatusCode(403, "It is not your event");
+            }
+            return NoContent();
         }
 
 
@@ -153,14 +172,17 @@ namespace Web.Controllers
         [HttpDelete("{eventId}")]
         public IActionResult Delete(int eventId)
         {
-            try
+            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var deletedEvent = _eventService.DeleteEvent(eventId, organizerId);
+            if (deletedEvent == 0)
             {
-                _eventService.DeleteEvent(eventId);
-                return NoContent();
-            } catch
+                return NotFound("Event not found");
+            }  
+            else if (deletedEvent == -1) 
             {
-                return BadRequest("Error al borrar");
+                return StatusCode(403, "It is not your event");              
             }
+            return NoContent();                                              
         }
     }
 }

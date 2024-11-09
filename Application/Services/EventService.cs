@@ -9,6 +9,7 @@ using Domain.Entities;
 using Application.Models.Request;
 using Application.Models.DTO;
 
+
 namespace Application.Services
 {
     public class EventService : IEventService
@@ -19,16 +20,20 @@ namespace Application.Services
             _eventRepository = eventRepository;
         }
 
-        public EventsDto CreateEvent(EventsCreateRequest eventRequest) 
+        public EventsDto CreateEvent(EventsCreateRequest eventRequest, int id) 
         { 
-            var newEvent = new Event(eventRequest.Name, eventRequest.Address, eventRequest.City, eventRequest.Date, eventRequest.NumberOfTickets, eventRequest.Category, eventRequest.Price, eventRequest.EventOrganizerId);
-            var createdEvent = _eventRepository.Add(newEvent, eventRequest.EventOrganizerId);
+            var newEvent = new Event(eventRequest.Name, eventRequest.Address, eventRequest.City, eventRequest.Date, eventRequest.NumberOfTickets, eventRequest.Category, eventRequest.Price, id);
+            var createdEvent = _eventRepository.Add(newEvent, id);
             return EventsDto.Create(createdEvent);
         }
 
         public EventsDto GetEventById(int eventId)
         {
             var eventToGet = _eventRepository.GetById(eventId);
+            if (eventToGet == null)
+            {
+                return null;
+            }
             return EventsDto.Create(eventToGet);
         }
 
@@ -54,15 +59,20 @@ namespace Application.Services
             return eventsDto;
         }
 
-        public void UpdateEvent(EventUpdateRequest eventUpdateRequest)
+        public EventsDto UpdateEvent(EventUpdateRequest eventUpdateRequest, int organizerId)
         {
             var eventToUpdate = new Event(eventUpdateRequest.Id, eventUpdateRequest.Name, eventUpdateRequest.Address, eventUpdateRequest.City, eventUpdateRequest.Date, eventUpdateRequest.Category, eventUpdateRequest.Price);
-            _eventRepository.Update(eventToUpdate);
+            var eventUpdated = _eventRepository.Update(eventToUpdate, organizerId);
+            if (eventUpdated == null) 
+            {
+                return null;
+            }
+            return EventsDto.Create(eventUpdated);
         }
 
-        public void DeleteEvent(int eventId)
+        public int DeleteEvent(int eventId, int organizerId)
         {
-            _eventRepository.Delete(eventId);
+           return _eventRepository.Delete(eventId, organizerId);
         }
     }
 }

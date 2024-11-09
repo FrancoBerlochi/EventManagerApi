@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Services;
 using Application.Models.Request;
 using Domain.Entities;
-using Domain.Exceptions;
+
 
 namespace Web.Controllers
 {
@@ -28,68 +28,59 @@ namespace Web.Controllers
 
 
         [Authorize(Policy = "SuperAdmin")]
-        [HttpPost()]
-        public IActionResult Create([FromBody] EventOrganizerCreateRequest eventOrganizerCreateRequest)
+        [HttpPost("CreateEventOrganizer")]
+        public IActionResult Create(EventOrganizerCreateRequest eventOrganizerCreateRequest)
         {
             if (eventOrganizerCreateRequest == null)
             {
                 return BadRequest("Invalid organizer data");
             }
             var organizerCreated = _eventOrganizerService.Add(eventOrganizerCreateRequest);
-            if(organizerCreated != null)
-            {
-                return CreatedAtAction(nameof(GetEventOrganizer), new {id = organizerCreated.Id}, organizerCreated);
-            }
+            
+            return CreatedAtAction(nameof(GetEventOrganizer), new {id = organizerCreated.Id}, organizerCreated);
 
-            return BadRequest("Error creating the organizer");
         }
-
-
-
 
         [Authorize(Policy = "SuperAdmin")]
         [HttpGet("organizer/{organizerId}")]
         public IActionResult GetEventOrganizer(int organizerId)
         {
-            try
+            var organizer = _eventOrganizerService.GetEventOrganizer(organizerId);
+            if (organizer == null)
             {
-                var organizer = _eventOrganizerService.GetEventOrganizer(organizerId);
-                return Ok(organizer);
+                return NotFound("Event organizer not found");
             }
-            catch (NotFoundException ex) 
-            {
-                return NotFound(ex.Message);
-            }
+            return Ok(organizer);                            
         }
 
 
         [Authorize(Policy = "SuperAdmin")]
-        [HttpGet()]
+        [HttpGet("GetAllOrganizers")]
         public IActionResult GetAll()
-        {
-            try
+        {   
+             var organizers = _eventOrganizerService.GetAll();
+            if (organizers == null)
             {
-                var organizers = _eventOrganizerService.GetAll();
-                return Ok(organizers);
-            } catch (NotFoundException ex) 
-            {
-                return NotFound(ex.Message);
+                return NotFound("Without events organizers");
             }
+            return Ok(organizers);
         }
 
 
 
         [Authorize(Policy = "SuperAdmin")]
-        [HttpPut()]
+        [HttpPut("UpdateOrganizer")]
         public IActionResult Update(int id, [FromQuery] EventOrganizerUpdateRequest eventOrganizerUpdateRequest)
         {
             var organizerToUpdate = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == id);
-            if (organizerToUpdate != null)
+            if (organizerToUpdate == null)
             {
-                _eventOrganizerService.Update(id, eventOrganizerUpdateRequest);
-                return Ok("Updated");
+                return NotFound("Organizer not found");
             }
-            return BadRequest("error");
+            _eventOrganizerService.Update(id, eventOrganizerUpdateRequest);
+           return NoContent();   
+            
+            
         }
 
 
@@ -97,14 +88,14 @@ namespace Web.Controllers
         [HttpDelete()]
         public IActionResult Delete(int id)
         {
-            try
+            var organizerToDelete = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == id);
+            if (organizerToDelete == null) 
             {
-                _eventOrganizerService.Delete(id);
-                return Ok("Deleted");
-            } catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
+                return NotFound("Organizer not found");
             }
+            _eventOrganizerService.Delete(id);
+                return NoContent();
+            
         }
     }
 }

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Domain.Interfaces;
 using Application.Models.DTO;
 using Application.Models.Request;
-using Domain.Exceptions;
 
 namespace Application.Services
 {
@@ -26,7 +25,7 @@ namespace Application.Services
             var eventOrganizer = _eventOrganizerRepository.GetEventOrganizer(eventOrganizerId);
             if(eventOrganizer == null)
             {
-                throw new NotFoundException($"No organizer found with ID: {eventOrganizerId}");
+                return null;
             }
             return EventOrganizerDto.Create(eventOrganizer);
         }
@@ -38,11 +37,11 @@ namespace Application.Services
 
             foreach(var organizer in allOrganizers)
             {
+                if (organizer == null) 
+                {
+                    return null;
+                }
                 organizersDto.Add(EventOrganizerDto.Create(organizer));
-            }
-            if(organizersDto.Count <= 0)
-            {
-                throw new NotFoundException("EventOrganizer", "All");
             }
             return organizersDto;
         }
@@ -67,7 +66,8 @@ namespace Application.Services
         public void Update(int id, EventOrganizerUpdateRequest eventOrganizerUpdateRequest)
         {
             var organizerToUpdate = new EventOrganizer(eventOrganizerUpdateRequest.Name, eventOrganizerUpdateRequest.Email, eventOrganizerUpdateRequest.Password, eventOrganizerUpdateRequest.Phone);
-            _eventOrganizerRepository.Update(id, organizerToUpdate);
+             _eventOrganizerRepository.Update(id, organizerToUpdate);
+            
         }
 
         public void Delete(int eventOrganizerId)
@@ -75,7 +75,7 @@ namespace Application.Services
             var eventOrganizer = _eventOrganizerRepository.GetEventOrganizer(eventOrganizerId);
             if(eventOrganizer == null)
             {
-                throw new NotFoundException("EventOrganizer", eventOrganizerId);
+                
             }
             _eventOrganizerRepository.Delete(eventOrganizerId);
         }
