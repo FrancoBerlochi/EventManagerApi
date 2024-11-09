@@ -36,6 +36,10 @@ namespace Infrastructure.Data.Repositories
             {
                 return -2;
             }
+            else if (myEvent.EventOrganizerId != eventOrganizerId) 
+            {
+                return -3;
+            }
 
             return myEvent.Tickets.Count(t => t.State == TicketState.Available);
         }
@@ -57,6 +61,10 @@ namespace Infrastructure.Data.Repositories
             else if (organizer == null)
             {
                 return -2;
+            }
+            else if (myEvent.EventOrganizerId != eventOrganizerId)
+            {
+                return -3;
             }
 
             return myEvent.Tickets.Count(t => t.State == TicketState.Sold);
@@ -85,7 +93,7 @@ namespace Infrastructure.Data.Repositories
                 existingOrganizer.Password = eventOrganizer.Password;
                 existingOrganizer.Phone = eventOrganizer.Phone;
                 _context.Update(existingOrganizer);
-                _context.SaveChanges();
+                _context.SaveChanges();              
             }
         }
 

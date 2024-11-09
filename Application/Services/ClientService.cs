@@ -44,8 +44,6 @@ namespace Application.Services
                 return false;
             }
 
-
-            _clientRepository.UpdateClient(clientId, client);
             return _clientRepository.BuyTicket(eventId, clientId);
         }
 
@@ -59,7 +57,21 @@ namespace Application.Services
             return _clientRepository.GetClientById(clientId);
         }
 
-        public List<Ticket> GetAllMyTickets(int clientId) { return _clientRepository.GetAllMyTickets(clientId); }
+        public List<TicketDto> GetAllMyTickets(int clientId) 
+        { 
+            var tickets = _clientRepository.GetAllMyTickets(clientId);
+            if (tickets == null)
+            {
+                return null;
+            }
+            var ticketsDto = new List<TicketDto>();
+            foreach (var ticket in tickets) 
+            { 
+                ticketsDto.Add(TicketDto.create(ticket));
+            }
+
+            return ticketsDto;
+        }
 
         public void Update(int id, ClientUpdateRequest clientUpdateRequest)
         {

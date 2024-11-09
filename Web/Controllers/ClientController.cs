@@ -9,6 +9,7 @@ using Infrastructure;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Application.Models.Request;
+using System.Security.Claims;
 
 namespace Web.Controllers
 {
@@ -30,35 +31,36 @@ namespace Web.Controllers
         public IActionResult Create([FromQuery] ClientCreateRequest clientCreateRequest)
         {
             var client = _clientService.CreateClient(clientCreateRequest);
-            if(client != null)
+            if(client == null)
             {
-                //return CreatedAtAction(nameof(GetClientById), new {id = client.Id}, client); 
-                return Ok("Client created");
+                return BadRequest("Client cannot be not null");
             }
-            return BadRequest();
+            return CreatedAtAction(nameof(GetClientById), new {id = client.Id}, client);
         }
 
 
         [Authorize(Policy = "Client")]
-        [HttpPost("{clientId}/events/{eventId}/buy-ticket")]
-        public IActionResult BuyTicket(int clientId, int eventId)
+        [HttpPost("/events/event/buy-ticket")]
+        public IActionResult BuyTicket(int eventId)
         {
+           var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
            var result = _clientService.BuyTicket(clientId, eventId);
 
-            if (result) //arreglo temporal
+            if (result) 
             {
                 return Ok("Ticket purchased succesfully");
             }
             else
             {
-                return BadRequest("Failed to purchase ticket");
+                return StatusCode(403,"Event not exist or you are not a client");
             }
         }
 
         [Authorize(Policy = "Client")]
-        [HttpGet("{clientId}/get-tickets")]
-        public IActionResult GetMyTickets(int clientId)
+        [HttpGet("client/get-tickets")]
+        public IActionResult GetMyTickets()
         {
+            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var tickets = _clientService.GetAllMyTickets(clientId);
 
             if (tickets == null)
@@ -69,14 +71,14 @@ namespace Web.Controllers
             return Ok(tickets);
         }
 
-        [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("{Id}")]
-        public IActionResult GetClientById(int Id) 
+        [Authorize(Policy = "Client")]
+        [HttpGet("client/get-client")]
+        public IActionResult GetClientById() 
         {
-            var client = _clientService.GetClientById(Id);
+            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var client = _clientService.GetClientById(clientId);
             if (client == null)
             {
-
                 return NotFound("Client not found");
             }
             return Ok(client);
@@ -89,33 +91,33 @@ namespace Web.Controllers
         }
 
 
-        [Authorize(Policy = "SuperAdmin")]
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [Authorize(Policy = "Client")]
+        [HttpPut("client/update")]
+        public IActionResult Update([FromQuery] ClientUpdateRequest clientUpdateRequest)
         {
-            var client = _clientService.GetClientById(id);
+            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            
+            _clientService.Update(clientId, clientUpdateRequest);
+            return NoContent();
+            
+
+        }
+
+        [Authorize(Policy = "Client")]
+        [HttpDelete("client/delete")]
+        public IActionResult Delete()
+        {
+            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var client = _clientService.GetClientById(clientId);
             if(client != null)
             {
-                _clientService.Delete(id);
+                _clientService.Delete(clientId);
                 return NoContent();
             }
-            return BadRequest("Not found");
+            return NotFound("Not found");
         }
 
-        [Authorize(Policy = "SuperAdmin")]
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromQuery] ClientUpdateRequest clientUpdateRequest)
-        {
-            try
-            {
-                _clientService.Update(id, clientUpdateRequest);
-                return NoContent();
-            } catch
-            {
-                return BadRequest();
-            }
-
-        }
+        
 
     }
 }

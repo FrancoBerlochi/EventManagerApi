@@ -14,8 +14,8 @@ namespace Domain.Interfaces
         Event GetById(int eventId);
         IEnumerable<Event> GetAll();
         IEnumerable<Event> GetEventsByOrganizerId(int organizerId);
-        void Update(Event eventToUpdate);
-        void Delete(int eventId);
+        Event Update(Event eventToUpdate, int organizerId);
+        int Delete(int eventId, int organizerId);
 
     }
 }

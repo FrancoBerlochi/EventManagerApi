@@ -23,8 +23,17 @@ namespace Infrastructure.Data.Repositories
         public Event Add(Event eventToAdd, int eventOrganizerId)
         {
             var eventOrganizer = _context.EventsOrganizers.Find(eventOrganizerId);
+            var listEvent = _context.Events.ToList();
+            var existingEvent = true;
+            foreach (var e in listEvent)
+            {
+                if (e.Name == eventToAdd.Name && e.City == eventToAdd.City && e.Address == eventToAdd.Address && e.Date == eventToAdd.Date)
+                {
+                    existingEvent = false;
+                }
+            }
 
-            if(eventToAdd != null && eventOrganizer != null)
+            if(eventToAdd != null && eventOrganizer != null && existingEvent)
             {
                 _context.Events.Add(eventToAdd);
                 eventOrganizer.MyEvents.Add(eventToAdd);
@@ -52,10 +61,10 @@ namespace Infrastructure.Data.Repositories
                 .ToList();
         }
 
-        public void Update(Event eventToUpdate)
+        public Event Update(Event eventToUpdate, int organizerId)
         {
             var existingEvent = _context.Events.Find(eventToUpdate.Id);
-            if(existingEvent != null)
+            if(existingEvent != null && organizerId == existingEvent.EventOrganizerId)
             {
                 existingEvent.Name = eventToUpdate.Name;
                 existingEvent.Address = eventToUpdate.Address;
@@ -67,17 +76,24 @@ namespace Infrastructure.Data.Repositories
                 _context.Update(existingEvent);
                 _context.SaveChanges();
             }
+            return existingEvent;
         }
 
-        public void Delete(int eventId)
+        public int Delete(int eventId, int organizerId)
         {
             var eventToDelete = _context.Events.Find(eventId);
 
-            if(eventToDelete != null)
+            if (eventToDelete != null && eventToDelete.EventOrganizerId == organizerId)
             {
                 _context.Events.Remove(eventToDelete);
                 _context.SaveChanges();
+                return 1;
             }
+            else if (eventToDelete == null) 
+            {
+                return 0;
+            }  
+            return -1;
         }
     }   
 }

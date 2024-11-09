@@ -12,7 +12,7 @@ namespace Application.Interfaces
     public interface IClientService
     {
         ClientDto CreateClient(ClientCreateRequest clientRequest);
-        List<Ticket> GetAllMyTickets(int clientId);
+        List<TicketDto> GetAllMyTickets(int clientId);
         bool BuyTicket(int clientId, int eventId);
         void Update(int id,  ClientUpdateRequest clientUpdateRequest);
         void Delete(int id);
