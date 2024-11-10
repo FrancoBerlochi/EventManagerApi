@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using Application.Models.Request;
 using Domain.Entities;
 using Application.Models.DTO;
+using System.Security.Claims;
 
 namespace Application.Interfaces
 {
     public interface IClientService
     {
+        int GetUserInfo(ClaimsPrincipal User);
         ClientDto CreateClient(ClientCreateRequest clientRequest);
         List<TicketDto> GetAllMyTickets(int clientId);
         bool BuyTicket(int clientId, int eventId);

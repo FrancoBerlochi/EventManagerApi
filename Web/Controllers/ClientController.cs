@@ -43,7 +43,7 @@ namespace Web.Controllers
         [HttpPost("/events/event/buy-ticket")]
         public IActionResult BuyTicket(int eventId)
         {
-           var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+           var clientId = _clientService.GetUserInfo(User);
            var result = _clientService.BuyTicket(clientId, eventId);
 
             if (result) 
@@ -60,7 +60,7 @@ namespace Web.Controllers
         [HttpGet("client/get-tickets")]
         public IActionResult GetMyTickets()
         {
-            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var clientId = _clientService.GetUserInfo(User);
             var tickets = _clientService.GetAllMyTickets(clientId);
 
             if (tickets == null)
@@ -75,7 +75,7 @@ namespace Web.Controllers
         [HttpGet("client/get-client")]
         public IActionResult GetClientById() 
         {
-            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var clientId = _clientService.GetUserInfo(User);
             var client = _clientService.GetClientById(clientId);
             if (client == null)
             {
@@ -95,7 +95,7 @@ namespace Web.Controllers
         [HttpPut("client/update")]
         public IActionResult Update([FromQuery] ClientUpdateRequest clientUpdateRequest)
         {
-            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var clientId = _clientService.GetUserInfo(User);
             
             _clientService.Update(clientId, clientUpdateRequest);
             return NoContent();
@@ -107,7 +107,7 @@ namespace Web.Controllers
         [HttpDelete("client/delete")]
         public IActionResult Delete()
         {
-            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var clientId = _clientService.GetUserInfo(User);
             var client = _clientService.GetClientById(clientId);
             if(client != null)
             {

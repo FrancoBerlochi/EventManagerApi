@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Models.DTO;
 using Application.Models.Request;
+using System.Security.Claims;
 
 namespace Application.Services
 {
@@ -21,6 +22,12 @@ namespace Application.Services
         {
             _clientRepository = clientRepository;
             _eventRepository = eventRepository;
+        }
+
+        public int GetUserInfo(ClaimsPrincipal User) 
+        {
+            var claimId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return claimId;
         }
 
         public ClientDto CreateClient(ClientCreateRequest clientCreateRequest)

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Application.Models.Request;
 using Application.Models.DTO;
+using System.Security.Claims;
 
 
 namespace Application.Services
@@ -20,10 +21,21 @@ namespace Application.Services
             _eventRepository = eventRepository;
         }
 
+        public int GetUserInfo(ClaimsPrincipal User) 
+        {
+            var claimId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            
+            return claimId;
+        }
+
         public EventsDto CreateEvent(EventsCreateRequest eventRequest, int id) 
         { 
             var newEvent = new Event(eventRequest.Name, eventRequest.Address, eventRequest.City, eventRequest.Date, eventRequest.NumberOfTickets, eventRequest.Category, eventRequest.Price, id);
             var createdEvent = _eventRepository.Add(newEvent, id);
+            if (createdEvent == null) 
+            {
+                return null;
+            }
             return EventsDto.Create(createdEvent);
         }
 

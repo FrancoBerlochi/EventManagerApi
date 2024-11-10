@@ -47,7 +47,7 @@ namespace Web.Controllers
                 return BadRequest("Invalid date");
             }
 
-            var claimId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var claimId = _eventService.GetUserInfo(User);
 
 
             var eventOrganizer = _context.EventsOrganizers.Find(claimId);
@@ -71,7 +71,7 @@ namespace Web.Controllers
         [HttpGet("organizer/events")]
         public IActionResult GetEventsByOrganizer()
         {
-            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var organizerId = _eventService.GetUserInfo(User);
 
             var events = _eventService.GetEventsByOrganizerId(organizerId);
 
@@ -89,7 +89,8 @@ namespace Web.Controllers
         public IActionResult GetEventById(int Id)
         {
             var eventToSearch = _eventService.GetEventById(Id);
-            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var organizerId = _eventService.GetUserInfo(User);
+
             if (eventToSearch.EventOrganizerId != organizerId)
             {
                 return StatusCode(403,"This event does not belong to you");
@@ -107,7 +108,8 @@ namespace Web.Controllers
         [HttpGet("organizers/events/event/tickets/available")]
         public IActionResult CheckAvailableTickets(int eventId)
         {
-            var eventOrganizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var eventOrganizerId = _eventService.GetUserInfo(User);
+            
 
             int result = _eventOrganizerService.CheckAvailableTickets(eventOrganizerId, eventId);
 
@@ -132,7 +134,7 @@ namespace Web.Controllers
         [HttpGet("organizers/events/event/tickets/sold")]
         public IActionResult CheckSoldTickets(int eventId)
         {
-            var eventOrganizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var eventOrganizerId = _eventService.GetUserInfo(User);
 
             int result = _eventOrganizerService.CheckSoldTickets(eventOrganizerId, eventId);
             if (result == -1)
@@ -154,8 +156,9 @@ namespace Web.Controllers
         [HttpPut("/update-event")]
         public IActionResult Update(EventUpdateRequest eventToUpdate)
         {
-            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var organizerId = _eventService.GetUserInfo(User);
             var updatedEvent = _eventService.UpdateEvent(eventToUpdate, organizerId);
+
             if (updatedEvent == null)
             {
                 return NotFound("Event not found");
@@ -172,7 +175,7 @@ namespace Web.Controllers
         [HttpDelete("{eventId}")]
         public IActionResult Delete(int eventId)
         {
-            var organizerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var organizerId = _eventService.GetUserInfo(User);
             var deletedEvent = _eventService.DeleteEvent(eventId, organizerId);
             if (deletedEvent == 0)
             {
