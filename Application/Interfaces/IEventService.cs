@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Application.Models.DTO;
@@ -11,7 +12,7 @@ namespace Application.Interfaces
 {
     public interface IEventService
     {
-
+        int GetUserInfo(ClaimsPrincipal User);
         EventsDto CreateEvent(EventsCreateRequest eventsRequest, int id);
         EventsDto GetEventById(int eventId);
         List<EventsDto> GetAllEvents();
