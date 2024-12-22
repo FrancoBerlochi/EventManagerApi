@@ -26,3 +26,12 @@ Welcome to the **Event System API**, a robust platform built with .NET Core and 
 1. **Clone the repository**:  
    ```bash
    git clone https://github.com/FrancoBerlochi/EventManagerApi.git
+   
+2. **Set up the database**
+   dotnet ef database update
+
+3. **Start the API**
+   dotnet run
+
+4. Access the API documentation:
+Navigate to http://localhost:5000/swagger.
