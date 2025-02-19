@@ -23,7 +23,7 @@ namespace Application.Services
 
         public int GetUserInfo(ClaimsPrincipal User) 
         {
-            var claimId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var claimId = int.Parse(User.FindFirst("NameIdentifier")?.Value);
             
             return claimId;
         }

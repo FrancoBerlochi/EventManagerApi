@@ -58,9 +58,9 @@ namespace Infrastructure.Services
 
               //Los claims son datos en clave->valor que nos permite guardar data del usuario.
               var claimsForToken = new List<Claim>();
-              claimsForToken.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-              claimsForToken.Add(new Claim(ClaimTypes.Name, user.Name));
-              claimsForToken.Add(new Claim(ClaimTypes.Role, user.Role));
+              claimsForToken.Add(new Claim("NameIdentifier", user.Id.ToString()));
+              claimsForToken.Add(new Claim("Name", user.Name));
+              claimsForToken.Add(new Claim("Role", user.Role));
 
 
             var jwtSecurityToken = new JwtSecurityToken( //agregar using System.IdentityModel.Tokens.Jwt; Acá es donde se crea el token con toda la data que le pasamos antes.

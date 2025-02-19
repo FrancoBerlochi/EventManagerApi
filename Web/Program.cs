@@ -64,10 +64,23 @@ builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntentica
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["AutenticacionService:Issuer"],
             ValidAudience = builder.Configuration["AutenticacionService:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AutenticacionService:SecretForKey"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AutenticacionService:SecretForKey"])),
+            NameClaimType = "NameIdentifier", 
+            RoleClaimType = "Role"
         };
     }
 );
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddAuthorization(options => {
     options.AddPolicy("Client", policy => policy.RequireRole("Client", "SuperAdmin"));
@@ -95,6 +108,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 

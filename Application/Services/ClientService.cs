@@ -17,7 +17,6 @@ namespace Application.Services
     {
         private readonly IClientRepository _clientRepository;
         private readonly IEventRepository _eventRepository;
-
         public ClientService (IClientRepository clientRepository, IEventRepository eventRepository)
         {
             _clientRepository = clientRepository;
