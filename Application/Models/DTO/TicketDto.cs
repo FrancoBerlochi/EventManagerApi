@@ -18,6 +18,10 @@ namespace Application.Models.DTO
         public float Amount { get; set; }
         public string? PaymentMethod { get; set; }
         public TicketState State { get; set; }
+        public string? EventName { get; set; }
+        public string? Address { get; set; }
+        public string? City { get; set; }
+        public DateTime? Date { get; set; }
 
         public static TicketDto create(Ticket ticketToShow) 
         { 
@@ -29,6 +33,10 @@ namespace Application.Models.DTO
             dto.Amount = ticketToShow.Amount;
             dto.PaymentMethod = ticketToShow.PaymentMethod;
             dto.State = ticketToShow.State;
+            dto.EventName = ticketToShow.EventName;
+            dto.Address = ticketToShow.Address;
+            dto.City = ticketToShow.City;
+            dto.Date = ticketToShow.Date;
             return dto;
         }
     }

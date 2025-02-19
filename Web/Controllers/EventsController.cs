@@ -35,7 +35,7 @@ namespace Web.Controllers
 
         [Authorize(Policy = "EventOrganizer")]
         [HttpPost("/create-event")]
-        public IActionResult CreateEvent([FromQuery] EventsCreateRequest createEventRequest)
+        public IActionResult CreateEvent(EventsCreateRequest createEventRequest)
         {
             if (createEventRequest == null)
             {

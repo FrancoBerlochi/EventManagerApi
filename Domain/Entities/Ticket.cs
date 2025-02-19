@@ -21,16 +21,22 @@ namespace Domain.Entities
         public float Amount { get; set; }
         public string? PaymentMethod { get; set; } 
         public TicketState State {  get; set; }
+        public string? EventName { get; set; }
+        public string? Address {  get; set; }
+        public string? City { get; set; }
+        public DateTime Date { get; set; }
 
-
-
-        public Ticket(float amount, int eventId, TicketState state, string? paymentMethod)
+        public Ticket(float amount, int eventId, TicketState state, string? paymentMethod, string eventName, string address, string city, DateTime date)
         {
             Amount = amount; 
             EventId = eventId;
             State = state;
             PaymentMethod = null;
             ClientId = null;
+            EventName = eventName;
+            Address = address;
+            City = city;
+            Date = date;
         }
 
         

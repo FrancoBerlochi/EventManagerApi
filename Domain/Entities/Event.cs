@@ -41,7 +41,7 @@ namespace Domain.Entities
 
             for (int i = 1; i <= numberOfTickets; i++)
             {
-               Tickets.Add(new Ticket (price, this.Id, TicketState.Available, null));
+               Tickets.Add(new Ticket (price, this.Id, TicketState.Available, null, name, address, city, date));
             }
         }
 
