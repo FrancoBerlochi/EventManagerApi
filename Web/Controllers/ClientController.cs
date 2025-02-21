@@ -40,7 +40,7 @@ namespace Web.Controllers
 
 
         [Authorize(Policy = "Client")]
-        [HttpPost("/events/event/buy-ticket")]
+        [HttpPost("/events/event/{eventId}/buy-ticket")]
         public IActionResult BuyTicket(int eventId)
         {
            var clientId = _clientService.GetUserInfo(User);
@@ -48,11 +48,11 @@ namespace Web.Controllers
 
             if (result) 
             {
-                return Ok("Ticket purchased succesfully");
+                return Ok(new { success = true, message = "Ticket purchased successfully" });
             }
             else
             {
-                return StatusCode(403,"Event not exist or you are not a client");
+                return StatusCode(403, new { success = false, message = "Event does not exist or you are not a client" });
             }
         }
 
