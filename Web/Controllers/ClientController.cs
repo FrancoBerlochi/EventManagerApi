@@ -28,7 +28,7 @@ namespace Web.Controllers
 
 
         [HttpPost()]
-        public IActionResult Create([FromQuery] ClientCreateRequest clientCreateRequest)
+        public IActionResult Create(ClientCreateRequest clientCreateRequest)
         {
             var client = _clientService.CreateClient(clientCreateRequest);
             if(client == null)
