@@ -42,7 +42,7 @@ namespace Web.Controllers
         }
 
         [Authorize(Policy = "SuperAdmin")]
-        [HttpGet("organizer/{organizerId}")]
+        [HttpGet("organizer")]
         public IActionResult GetEventOrganizer(int organizerId)
         {
             var organizer = _eventOrganizerService.GetEventOrganizer(organizerId);
