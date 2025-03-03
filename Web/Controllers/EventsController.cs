@@ -131,7 +131,7 @@ namespace Web.Controllers
         }
 
         [Authorize(Policy = "EventOrganizer")]
-        [HttpGet("organizers/events/event/tickets/sold")]
+        [HttpGet("organizers/events/event/tickets/sold/{eventId}")]
         public IActionResult CheckSoldTickets(int eventId)
         {
             var eventOrganizerId = _eventService.GetUserInfo(User);
@@ -171,7 +171,7 @@ namespace Web.Controllers
         }
 
 
-        [Authorize(Policy = "EventOrganizer")]
+        [Authorize(Policy = "EventOrganizer, SuperAdmin")]
         [HttpDelete("{eventId}")]
         public IActionResult Delete(int eventId)
         {

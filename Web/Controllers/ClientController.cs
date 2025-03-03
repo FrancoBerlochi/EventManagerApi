@@ -93,7 +93,7 @@ namespace Web.Controllers
 
         [Authorize(Policy = "Client")]
         [HttpPut("client/update")]
-        public IActionResult Update([FromQuery] ClientUpdateRequest clientUpdateRequest)
+        public IActionResult Update(ClientUpdateRequest clientUpdateRequest)
         {
             var clientId = _clientService.GetUserInfo(User);
             
