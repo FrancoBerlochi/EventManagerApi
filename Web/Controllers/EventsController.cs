@@ -171,7 +171,7 @@ namespace Web.Controllers
         }
 
 
-        [Authorize(Policy = "EventOrganizer, SuperAdmin")]
+        [Authorize(Policy = "EventOrganizer")]
         [HttpDelete("{eventId}")]
         public IActionResult Delete(int eventId)
         {
@@ -186,6 +186,22 @@ namespace Web.Controllers
                 return StatusCode(403, "It is not your event");              
             }
             return NoContent();                                              
+        }
+
+        [Authorize(Policy = "SuperAdmin")]
+        [HttpDelete("{organizerId}/{eventId}")]
+        public IActionResult Delete(int organizerId, int eventId) 
+        {
+            var deletedEvent = _eventService.DeleteEvent(eventId, organizerId);
+            if (deletedEvent == 0)
+            {
+                return NotFound("Event not found");
+            }
+            else if (deletedEvent == -1)
+            {
+                return StatusCode(403, "It is not your event");
+            }
+            return NoContent();
         }
     }
 }
