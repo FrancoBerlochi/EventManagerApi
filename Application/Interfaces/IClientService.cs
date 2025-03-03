@@ -20,6 +20,7 @@ namespace Application.Interfaces
         void Delete(int id);
         List<Event> GetAll();
         Client GetClientById(int clientId);
+        List<ClientDto> GetAllClients();
 
     }
 }

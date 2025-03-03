@@ -63,6 +63,20 @@ namespace Application.Services
             return _clientRepository.GetClientById(clientId);
         }
 
+        public List<ClientDto> GetAllClients() 
+        { 
+            var clients = _clientRepository.GetAllClients();
+            if (clients == null) 
+            {
+                return null;
+            }
+            var clientsDto = new List<ClientDto>();
+            foreach (var client in clients) 
+            {
+                clientsDto.Add(ClientDto.Create(client));
+            }
+            return clientsDto;
+        }
         public List<TicketDto> GetAllMyTickets(int clientId) 
         { 
             var tickets = _clientRepository.GetAllMyTickets(clientId);

@@ -62,6 +62,11 @@ namespace Infrastructure.Data.Repositories
             return _context.Users.OfType<Client>().FirstOrDefault(c => c.Id == id);
         }
 
+        public List<Client> GetAllClients() 
+        {
+            return _context.Users.OfType<Client>().ToList();
+        }
+
         public void UpdateClient(int id, Client client)
         {
             var existingClient = _context.Clients.OfType<Client>().FirstOrDefault(c => c.Id == id);

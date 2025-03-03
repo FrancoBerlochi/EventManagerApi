@@ -84,6 +84,16 @@ namespace Web.Controllers
             return Ok(client);
         }
 
+        [Authorize(Policy = "SuperAdmin")]
+        [HttpGet("client/get-all-clients")]
+
+        public IActionResult GetAllClients() 
+        {
+            var clients = _clientService.GetAllClients();
+            if (clients == null) return NotFound("No clients");
+            return Ok(clients);
+        }
+
         [HttpGet("get-all-events")]
         public IActionResult GetAllEvents()
         {
