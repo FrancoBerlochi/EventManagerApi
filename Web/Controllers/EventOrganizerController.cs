@@ -69,8 +69,8 @@ namespace Web.Controllers
 
 
         [Authorize(Policy = "SuperAdmin")]
-        [HttpPut("UpdateOrganizer")]
-        public IActionResult Update(int id, [FromQuery] EventOrganizerUpdateRequest eventOrganizerUpdateRequest)
+        [HttpPut("UpdateOrganizer/{id}")]
+        public IActionResult Update(int id, EventOrganizerUpdateRequest eventOrganizerUpdateRequest)
         {
             var organizerToUpdate = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == id);
             if (organizerToUpdate == null)
@@ -85,7 +85,7 @@ namespace Web.Controllers
 
 
         [Authorize(Policy = "SuperAdmin")]
-        [HttpDelete()]
+        [HttpDelete("{id}")]    
         public IActionResult Delete(int id)
         {
             var organizerToDelete = _context.Users.OfType<EventOrganizer>().FirstOrDefault(e => e.Id == id);
@@ -95,7 +95,6 @@ namespace Web.Controllers
             }
             _eventOrganizerService.Delete(id);
                 return NoContent();
-            
         }
     }
 }
