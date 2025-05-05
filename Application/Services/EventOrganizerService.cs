@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Domain.Interfaces;
 using Application.Models.DTO;
 using Application.Models.Request;
+using Domain.Enums;
 
 namespace Application.Services
 {
@@ -50,6 +51,21 @@ namespace Application.Services
         {
 
             return _eventOrganizerRepository.CheckAvailableTickets(eventOrganizerId, eventId);
+        }
+
+        public List<Object> CheckAvailableAllTickets(int eventOrganizerId) {
+            var events =  _eventOrganizerRepository.CheckAvailableAllTickets(eventOrganizerId);
+            var allAvailableEvents = new List<Object>();
+            for (int i = 0; i < events.Count; i++)
+            {
+                var countTickets = events[i].Tickets.Count(t => t.State == TicketState.Available);
+
+                if (countTickets > 0)
+                {
+                    allAvailableEvents.Add(new {events[i].Id, availableTickets = countTickets });
+                }
+            }
+            return allAvailableEvents;
         }
 
         public int CheckSoldTickets(int eventOrganizerId, int eventId)

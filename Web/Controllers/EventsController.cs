@@ -131,8 +131,18 @@ namespace Web.Controllers
         }
 
         [Authorize(Policy = "EventOrganizer")]
+        [HttpGet("organizers/events/event/tickets/allAvailable")]
+        public IActionResult CheckAvailableAllTickets() 
+        {
+            var eventOrganizerId = _eventService.GetUserInfo(User);
+
+            List<Object> result = _eventOrganizerService.CheckAvailableAllTickets(eventOrganizerId);
+
+        }
+
+        [Authorize(Policy = "EventOrganizer")]
         [HttpGet("organizers/events/event/tickets/sold/{eventId}")]
-        public IActionResult CheckSoldTickets(int eventId)
+        public IActionResult CheckSoldTickets([FromRoute]int eventId)
         {
             var eventOrganizerId = _eventService.GetUserInfo(User);
 

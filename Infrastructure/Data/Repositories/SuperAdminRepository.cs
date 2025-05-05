@@ -42,7 +42,7 @@ namespace Infrastructure.Data.Repositories
                 .ToList();
         }
 
-        public void Update(Event eventToUpdate)
+        public void UpdateEvent(Event eventToUpdate)
         {
             var existingEvent = _context.Events.Find(eventToUpdate.Id);
             if (existingEvent != null)
@@ -59,6 +59,19 @@ namespace Infrastructure.Data.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public bool Update(int id, SuperAdmin superAdmin) 
+        { 
+            var contextSuperAdmin = _context.Users.OfType<SuperAdmin>().FirstOrDefault(a => a.Id == id);
+            contextSuperAdmin.Name = superAdmin.Name;
+            contextSuperAdmin.Email = superAdmin.Email;
+            contextSuperAdmin.Password = superAdmin.Password;
+            contextSuperAdmin.Phone = superAdmin.Phone;
+            _context.Users.Update(contextSuperAdmin);
+            _context.SaveChanges();
+            return true;
+        }
+
 
         public void Delete(int eventId)
         {

@@ -17,6 +17,8 @@ namespace Application.Interfaces
         void Update(int id, EventOrganizerUpdateRequest eventOrganizerUpdateRequest);
         void Delete(int eventOrganizerId);
         int CheckAvailableTickets(int eventOrganizerId, int eventId);
+
+        List<Object> CheckAvailableAllTickets(int eventOrganizerId);
         int CheckSoldTickets(int eventOrganizerId, int eventId);
     }
 }

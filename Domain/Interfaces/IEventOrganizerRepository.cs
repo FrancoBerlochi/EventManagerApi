@@ -15,6 +15,7 @@ namespace Domain.Interfaces
         void Update(int id, EventOrganizer eventOrganizer);
         void Delete(int eventOrganizerId);
         int CheckAvailableTickets(int eventOrganizerId, int eventId);
+        List<Event> CheckAvailableAllTickets(int eventOrganizerId);
         int CheckSoldTickets(int eventOrganizerId, int eventId);
     }
 }

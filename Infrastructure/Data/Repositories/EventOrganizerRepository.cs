@@ -49,6 +49,13 @@ namespace Infrastructure.Data.Repositories
             return _context.Users.OfType<EventOrganizer>().ToList();
         }
 
+        public List<Event> CheckAvailableAllTickets(int eventOrganizerId) 
+        {
+            return  _context.Events.Include(t => t.Tickets).Where(o => o.EventOrganizerId == eventOrganizerId).ToList();
+            
+           
+        }
+
         public int CheckSoldTickets(int eventOrganizerId, int eventId)
         {
             var myEvent = _context.Events.Include(t => t.Tickets).FirstOrDefault(e => e.Id == eventId);
