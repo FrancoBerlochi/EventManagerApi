@@ -8,6 +8,7 @@ namespace Domain.Entities
 {
     public class SuperAdmin : User
     {
+        public SuperAdmin() { } 
         public SuperAdmin(string name, string email, string password, string phone, string role = "SuperAdmin") : base(name, email, password, phone, role)
         {
 

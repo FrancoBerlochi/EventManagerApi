@@ -36,6 +36,20 @@ namespace Application.Services
             return ClientDto.Create(createdClient);
         }
 
+        public List<Object> GetAllAvailableTickets() 
+        { 
+            var events =  _clientRepository.GetAllAvailableTickets();
+            var allAvailableEvents = new List<Object>();
+            for (int i = 0; i < events.Count; i++)
+            {
+                var countTickets = events[i].Tickets.Count(t => t.State == TicketState.Available);
+               
+                 allAvailableEvents.Add(new { events[i].Id, availableTickets = countTickets });
+                
+            }
+            return allAvailableEvents;
+        }
+
         public bool BuyTicket(int clientId, int eventId)
         {
             Client client = _clientRepository.GetClientById(clientId);

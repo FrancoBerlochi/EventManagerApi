@@ -30,7 +30,13 @@ namespace Infrastructure.Data.Repositories
             }
             return null;
         }
-       
+
+        public List<Event> GetAllAvailableTickets() 
+        {
+            return _context.Events.Include(t => t.Tickets).ToList();
+        }
+
+
         public bool BuyTicket(int eventId, int clientId)
         {
             var client = _context.Users.OfType<Client>().FirstOrDefault(c => c.Id == clientId);

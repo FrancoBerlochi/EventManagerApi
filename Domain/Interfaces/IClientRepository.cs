@@ -10,6 +10,7 @@ namespace Domain.Interfaces
     public interface IClientRepository
     {
         Client CreateClient(Client client);
+        List<Event> GetAllAvailableTickets();
         bool BuyTicket(int eventId, int clientId);
         List<Ticket> GetAllMyTickets(int clientId);
         Client GetClientById(int id);

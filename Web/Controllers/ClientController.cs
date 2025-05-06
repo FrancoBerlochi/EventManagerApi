@@ -38,6 +38,13 @@ namespace Web.Controllers
             return CreatedAtAction(nameof(GetClientById), new {id = client.Id}, client);
         }
 
+        [HttpGet("/events/event/ticket/available")]
+        public IActionResult GetAllAvailableTickets() 
+        {
+            var result = _clientService.GetAllAvailableTickets();
+            return Ok(result);
+
+        }
 
         [Authorize(Policy = "Client")]
         [HttpPost("/events/event/{eventId}/buy-ticket")]

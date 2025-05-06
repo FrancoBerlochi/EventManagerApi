@@ -137,6 +137,7 @@ namespace Web.Controllers
             var eventOrganizerId = _eventService.GetUserInfo(User);
 
             List<Object> result = _eventOrganizerService.CheckAvailableAllTickets(eventOrganizerId);
+            return Ok(result);
 
         }
 

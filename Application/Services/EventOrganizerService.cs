@@ -58,12 +58,9 @@ namespace Application.Services
             var allAvailableEvents = new List<Object>();
             for (int i = 0; i < events.Count; i++)
             {
-                var countTickets = events[i].Tickets.Count(t => t.State == TicketState.Available);
+               var countTickets = events[i].Tickets.Count(t => t.State == TicketState.Available);
+               allAvailableEvents.Add(new {events[i].Id, availableTickets = countTickets });
 
-                if (countTickets > 0)
-                {
-                    allAvailableEvents.Add(new {events[i].Id, availableTickets = countTickets });
-                }
             }
             return allAvailableEvents;
         }

@@ -14,6 +14,7 @@ namespace Application.Interfaces
     {
         int GetUserInfo(ClaimsPrincipal User);
         ClientDto CreateClient(ClientCreateRequest clientRequest);
+        List<Object> GetAllAvailableTickets();
         List<TicketDto> GetAllMyTickets(int clientId);
         bool BuyTicket(int clientId, int eventId);
         void Update(int id,  ClientUpdateRequest clientUpdateRequest);
