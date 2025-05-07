@@ -56,18 +56,39 @@ namespace Application.Services
         public List<Object> CheckAvailableAllTickets(int eventOrganizerId) {
             var events =  _eventOrganizerRepository.CheckAvailableAllTickets(eventOrganizerId);
             var allAvailableEvents = new List<Object>();
-            for (int i = 0; i < events.Count; i++)
+            if(events != null) 
             {
-               var countTickets = events[i].Tickets.Count(t => t.State == TicketState.Available);
-               allAvailableEvents.Add(new {events[i].Id, availableTickets = countTickets });
+                for (int i = 0; i < events.Count; i++)
+                {
+                    var countTickets = events[i].Tickets.Count(t => t.State == TicketState.Available);
+                    allAvailableEvents.Add(new { events[i].Id, availableTickets = countTickets });
 
+                }
+                return allAvailableEvents;
             }
-            return allAvailableEvents;
+            return null;
         }
 
         public int CheckSoldTickets(int eventOrganizerId, int eventId)
         {
             return _eventOrganizerRepository.CheckSoldTickets(eventOrganizerId, eventId);
+        }
+
+        public int? CheckSoldAllTickets(int eventOrganizerId) 
+        {
+            var events = _eventOrganizerRepository.CheckSoldAllTickets(eventOrganizerId);
+            int allSoldTickets = 0;
+            if (events != null)
+            {
+               for (int i = 0;i < events.Count; i++) 
+                {
+                var countTickets = events[i].Tickets.Count(t => t.State == TicketState.Sold);
+                allSoldTickets += countTickets;
+                } 
+                return allSoldTickets;
+            }
+            return null;
+            
         }
 
         public EventOrganizerDto Add(EventOrganizerCreateRequest eventOrganizerCreateRequest)

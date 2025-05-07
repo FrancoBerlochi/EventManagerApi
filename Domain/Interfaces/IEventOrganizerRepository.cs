@@ -17,5 +17,6 @@ namespace Domain.Interfaces
         int CheckAvailableTickets(int eventOrganizerId, int eventId);
         List<Event> CheckAvailableAllTickets(int eventOrganizerId);
         int CheckSoldTickets(int eventOrganizerId, int eventId);
+        List<Event> CheckSoldAllTickets(int eventOrganizerId);
     }
 }

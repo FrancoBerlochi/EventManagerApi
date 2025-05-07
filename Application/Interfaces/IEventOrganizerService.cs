@@ -20,5 +20,7 @@ namespace Application.Interfaces
 
         List<Object> CheckAvailableAllTickets(int eventOrganizerId);
         int CheckSoldTickets(int eventOrganizerId, int eventId);
+
+        int? CheckSoldAllTickets(int eventOrganizerId);
     }
 }

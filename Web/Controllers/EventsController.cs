@@ -137,6 +137,7 @@ namespace Web.Controllers
             var eventOrganizerId = _eventService.GetUserInfo(User);
 
             List<Object> result = _eventOrganizerService.CheckAvailableAllTickets(eventOrganizerId);
+            if (result == null) { return NotFound("there are no events"); }
             return Ok(result);
 
         }
@@ -161,6 +162,19 @@ namespace Web.Controllers
                 return StatusCode(403, "It is not your event");
             }
                 return Ok(result);
+        }
+
+        [Authorize(Policy = "EventOrganizer")]
+        [HttpGet("organizers/events/event/tickets/allSold")]
+        public IActionResult CheckSoldAllTickets()
+        {
+            var eventOrganizerId = _eventService.GetUserInfo(User);
+
+            var result = _eventOrganizerService.CheckSoldAllTickets(eventOrganizerId);
+
+            if (result == null) { return NotFound("there are no events"); }
+            return Ok(result);
+
         }
 
         [Authorize(Policy = "EventOrganizer")]

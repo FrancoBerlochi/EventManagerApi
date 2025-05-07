@@ -77,6 +77,11 @@ namespace Infrastructure.Data.Repositories
             return myEvent.Tickets.Count(t => t.State == TicketState.Sold);
         }
 
+        public List<Event> CheckSoldAllTickets(int eventOrganizerId) 
+        { 
+            return _context.Events.Include(t => t.Tickets).Where(o => o.EventOrganizerId == eventOrganizerId).ToList();
+        }
+
         public EventOrganizer Add(EventOrganizer eventOrganizer)
         {
 
