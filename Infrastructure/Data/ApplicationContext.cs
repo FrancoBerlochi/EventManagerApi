@@ -57,7 +57,7 @@ namespace Infrastructure
                 {
                     Id = 1,
                     Name = "francoc3",
-                    Email = "string",
+                    Email = "string@gmail.com",
                     Password = "string",
                     Phone = "3415526384",
                     Role = "SuperAdmin"
